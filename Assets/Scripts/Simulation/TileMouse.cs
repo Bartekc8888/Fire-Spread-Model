@@ -45,23 +45,16 @@ public class TileMouse : MonoBehaviour
         bool isTileHitWithRay = _collider.Raycast(ray, out hitInfo, Mathf.Infinity);
         if (isTileHitWithRay)
         {
-            Vector3 hitPointPositionVector = tileMap.gameObject.transform.InverseTransformPoint(hitInfo.point);
-            Vector3[] rectVertices = tileMap.GetRectVerticesByPoint(hitPointPositionVector);
-            if (rectVertices.Length < 4)
+            Vector3[] tileRectVertices = GetTileVerticesPositions(hitInfo);
+            if (tileRectVertices.Length < 4)
             {
                 return;
             }
 
-            Vector3 startPosition = tileMap.gameObject.transform.TransformPoint(rectVertices[0]);
-            for (int i = 0; i < rectVertices.Length; i++)
-            {
-                rectVertices[i] = tileMap.gameObject.transform.TransformPoint(rectVertices[i].x, rectVertices[i].y + 0.01f, rectVertices[i].z);
-                rectVertices[i] = new Vector3(rectVertices[i].x - startPosition.x,
-                    rectVertices[i].y - startPosition.y, rectVertices[i].z - startPosition.z);
-            }
+            Vector3 startPosition = PositionIndicatorAboveTile(tileRectVertices);
 
             transform.position = startPosition;
-            _meshFilter.mesh.vertices = rectVertices;
+            _meshFilter.mesh.vertices = tileRectVertices;
             
             _renderer.enabled = true;
         }
@@ -69,5 +62,27 @@ public class TileMouse : MonoBehaviour
         {
             _renderer.enabled = false;
         }
+    }
+
+    private Vector3 PositionIndicatorAboveTile(Vector3[] rectVertices)
+    {
+        Vector3 startPosition = tileMap.gameObject.transform.TransformPoint(rectVertices[0]);
+        for (int i = 0; i < rectVertices.Length; i++)
+        {
+            rectVertices[i] =
+                tileMap.gameObject.transform.TransformPoint(rectVertices[i].x, rectVertices[i].y + 0.01f,
+                    rectVertices[i].z);
+            rectVertices[i] = new Vector3(rectVertices[i].x - startPosition.x,
+                rectVertices[i].y - startPosition.y, rectVertices[i].z - startPosition.z);
+        }
+
+        return startPosition;
+    }
+
+    private Vector3[] GetTileVerticesPositions(RaycastHit hitInfo)
+    {
+        Vector3 hitPointPositionVector = tileMap.gameObject.transform.InverseTransformPoint(hitInfo.point);
+        Vector3[] rectVertices = tileMap.GetRectVerticesByPoint(hitPointPositionVector);
+        return rectVertices;
     }
 }

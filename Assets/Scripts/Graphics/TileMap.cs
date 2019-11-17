@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Data;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -7,8 +7,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshCollider))]
 public class TileMap : MonoBehaviour
 {
-    public int size_x = 100;
-    public int size_z = 100;
     public float tileSize = 1f;
     
     public int tileResolution = 16;
@@ -18,24 +16,33 @@ public class TileMap : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private MeshCollider _meshCollider;
 
-    void Start()
+    private TileMapData _tileMapData;
+    private int _sizeX;
+    private int _sizeY;
+
+    public void InitTileMap(int sizeX, int sizeY, TileMapData tileMapData)
+    {
+        GrabComponents();
+        
+        _sizeX = sizeX;
+        _sizeY = sizeY;
+        _tileMapData = tileMapData;
+        
+        BuildMap();
+        BuildTexture();
+    }
+    
+    void GrabComponents()
     {
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshCollider = GetComponent<MeshCollider>();
-        InitTileMap();
-    }
-
-    public void InitTileMap()
-    {
-        BuildMap();
-        BuildTexture();
     }
 
     public Vector3[] GetRectVerticesByPoint(Vector3 positionVector)
     {
         Vector2Int tileByPoint = GetTileByPoint(positionVector);
-        TileMapGenerator tileMapGenerator = new TileMapGenerator(size_x, size_z, tileSize);
+        TileMapGenerator tileMapGenerator = new TileMapGenerator(_sizeX, _sizeY, tileSize);
         Mesh sharedMesh = _meshFilter.sharedMesh;
         return tileMapGenerator.GetTrianglesOfATile(tileByPoint, sharedMesh.vertices);
     }
@@ -48,7 +55,7 @@ public class TileMap : MonoBehaviour
 
     public void BuildMap()
     {
-        TileMapGenerator tileMapGenerator = new TileMapGenerator(size_x, size_z, tileSize);
+        TileMapGenerator tileMapGenerator = new TileMapGenerator(_sizeX, _sizeY, tileSize);
 
         Mesh mesh = tileMapGenerator.GenerateMap();
         _meshFilter.mesh = mesh;
@@ -57,8 +64,8 @@ public class TileMap : MonoBehaviour
     
     private void BuildTexture()
     {
-        TileMapTextureGenerator tileMapTextureGenerator = new TileMapTextureGenerator(textureAtlas, tileResolution, size_x, size_z);
-        Texture2D texture = tileMapTextureGenerator.GenerateTexture();
+        TileMapTextureGenerator tileMapTextureGenerator = new TileMapTextureGenerator(textureAtlas, tileResolution, _sizeX, _sizeY);
+        Texture2D texture = tileMapTextureGenerator.GenerateTexture(_tileMapData);
         _meshRenderer.sharedMaterial.mainTexture = texture;
         
         Debug.Log("Texture built!");

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Data;
 using UnityEngine;
 
 public class TileMapTextureGenerator
@@ -16,10 +17,10 @@ public class TileMapTextureGenerator
         _tileSizeZ = tileSizeZ;
     }
 
-    public Texture2D GenerateTexture()
+    public Texture2D GenerateTexture(TileMapData tileMapData)
     {
         List<Color[]> extractedTextures = ExtractTexturesFromAtlas();
-        return GenerateTexture(extractedTextures);
+        return GenerateTexture(tileMapData, extractedTextures);
     }
     
     private List<Color[]> ExtractTexturesFromAtlas()
@@ -41,7 +42,7 @@ public class TileMapTextureGenerator
         return extractedTextures;
     }
 
-    private Texture2D GenerateTexture(IReadOnlyList<Color[]> extractedTextures)
+    private Texture2D GenerateTexture(TileMapData tileMapData, IReadOnlyList<Color[]> extractedTextures)
     {
         int textureWidth = _tileResolution * _tileSizeX;
         int textureHeight = _tileResolution * _tileSizeZ;
@@ -51,7 +52,9 @@ public class TileMapTextureGenerator
         {
             for (int x = 0; x < _tileSizeX; x++)
             {
-                Color[] extractedTexture = extractedTextures[Random.Range(0, extractedTextures.Count)];
+                TileData tileData = tileMapData.GetTileData(x, y);
+                int textureIndex = MapTerrainToTexture(tileData.TerrainData.Type);
+                Color[] extractedTexture = extractedTextures[textureIndex];
                 texture.SetPixels(x * _tileResolution, y * _tileResolution, _tileResolution, _tileResolution, extractedTexture);
             }
         }
@@ -60,5 +63,22 @@ public class TileMapTextureGenerator
         texture.filterMode = FilterMode.Point;
         texture.Apply();
         return texture;
+    }
+
+    private int MapTerrainToTexture(TerrainType type)
+    {
+        switch (type)
+        {
+            case TerrainType.Grass:
+                return 0;
+            case TerrainType.Trees:
+                return 1;
+            case TerrainType.Bushes:
+                return 2;
+            case TerrainType.HighGrass:
+                return 3;
+            default:
+                return 0;
+        }
     }
 }

@@ -1,7 +1,8 @@
-﻿using UnityEditor;
+﻿using Simulation;
+using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(TileMap))]
+[CustomEditor(typeof(SimulationInstance))]
 public class ReloadMap : Editor
 {
     public override void OnInspectorGUI()
@@ -9,8 +10,8 @@ public class ReloadMap : Editor
         base.OnInspectorGUI();
         if (GUILayout.Button("Regenerate"))
         {
-            TileMap tileMap = (TileMap) target;
-            tileMap.InitTileMap();
+            SimulationInstance simulationInstance = (SimulationInstance) target;
+            simulationInstance.RebuildSimulation();
         }
     }
 }

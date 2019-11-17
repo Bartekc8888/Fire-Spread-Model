@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5570634330379875365}
   - component: {fileID: 5570634330379875364}
   - component: {fileID: 6352478817375735333}
+  - component: {fileID: 753222821}
   m_Layer: 0
   m_Name: TileMap
   m_TagString: Untagged
@@ -46,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5077a72f2ad174b88a6cf6994bc128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size_x: 100
-  size_z: 100
-  tileSize: 3
+  tileSize: 20
+  tileResolution: 16
+  textureAtlas: {fileID: 2800000, guid: 8ba44822b5f0161429a388636940990f, type: 3}
 --- !u!33 &5570634330379875365
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -74,7 +75,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 40ae432bfa7c61c4a9c29057bfa059bf, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,3 +110,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 0}
+--- !u!114 &753222821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9010125212496539217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6eec3d7d6b640a3be3b02115183066a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sizeX: 100
+  sizeY: 100
