@@ -55,9 +55,9 @@ public class TileMouse : MonoBehaviour
             Vector3 startPosition = tileMap.gameObject.transform.TransformPoint(rectVertices[0]);
             for (int i = 0; i < rectVertices.Length; i++)
             {
-                rectVertices[i] = tileMap.gameObject.transform.TransformPoint(rectVertices[i].x, rectVertices[i].y + 0.2f, rectVertices[i].z);
+                rectVertices[i] = tileMap.gameObject.transform.TransformPoint(rectVertices[i].x, rectVertices[i].y + 0.01f, rectVertices[i].z);
                 rectVertices[i] = new Vector3(rectVertices[i].x - startPosition.x,
-                    rectVertices[i].y + 0.2f - startPosition.y, rectVertices[i].z - startPosition.z);
+                    rectVertices[i].y - startPosition.y, rectVertices[i].z - startPosition.z);
             }
 
             transform.position = startPosition;

@@ -90,7 +90,7 @@ public class TileMapGenerator
                 int currentVertexIndex = z * verticesSizeX + x;
                 mapVertices[currentVertexIndex] = new Vector3(x * tileSize, Random.Range(0.5f, 10f), z * tileSize);
                 normalVertices[currentVertexIndex] = Vector3.up;
-                uvVertices[currentVertexIndex] = new Vector2((float) x / verticesSizeX, (float) z / verticesSizeZ);
+                uvVertices[currentVertexIndex] = new Vector2((float) x / (verticesSizeX - 1), (float) z / (verticesSizeZ - 1));
             }
         }
     }

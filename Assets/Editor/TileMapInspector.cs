@@ -10,7 +10,7 @@ public class ReloadMap : Editor
         if (GUILayout.Button("Regenerate"))
         {
             TileMap tileMap = (TileMap) target;
-            tileMap.BuildMap();
+            tileMap.InitTileMap();
         }
     }
 }
