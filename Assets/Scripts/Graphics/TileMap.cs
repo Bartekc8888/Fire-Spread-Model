@@ -57,7 +57,7 @@ public class TileMap : MonoBehaviour
     {
         TileMapGenerator tileMapGenerator = new TileMapGenerator(_sizeX, _sizeY, tileSize);
 
-        Mesh mesh = tileMapGenerator.GenerateMap();
+        Mesh mesh = tileMapGenerator.GenerateMap(_tileMapData);
         _meshFilter.mesh = mesh;
         _meshCollider.sharedMesh = mesh;
     }

@@ -1,5 +1,8 @@
 ﻿using System;
 using Data;
+using UnityEngine;
+using Random = UnityEngine.Random;
+using TerrainData = Data.TerrainData;
 
 namespace Graphics
 {
@@ -7,11 +10,15 @@ namespace Graphics
     {
         private readonly int _sizeX;
         private readonly int _sizeY;
+        private readonly float _maxHeight;
+        private readonly float _generatorFrequency;
 
-        public MapDataGenerator(int sizeX, int sizeY)
+        public MapDataGenerator(int sizeX, int sizeY, float maxHeight, float generatorFrequency)
         {
             _sizeX = sizeX;
             _sizeY = sizeY;
+            _maxHeight = maxHeight;
+            _generatorFrequency = generatorFrequency;
         }
         
         public TileMapData GenerateMapData()
@@ -25,17 +32,36 @@ namespace Graphics
         private void InitTiles(TileMapData tileMapData)
         {
             Array terrainTypes = Enum.GetValues(typeof(TerrainType));
-            Random random = new Random();
+            
+            float terrainSeed = Random.Range(0.0f, 200.0f);
+            float heightSeed = Random.Range(0.0f, 200.0f);
 
             for (int x = 0; x < _sizeX; x++)
             {
                 for (int y = 0; y < _sizeY; y++)
                 {
-                    TerrainType terrainType = (TerrainType)terrainTypes.GetValue(random.Next(terrainTypes.Length));
-                    TerrainData terrainData = new TerrainData(terrainType);
+                    int generatedType = GenerateTerrainType(x, y, terrainSeed, terrainTypes.Length);
+                    float generatedHeight = GenerateTerrainHeight(x, y, heightSeed);
+
+                    TerrainType terrainType = (TerrainType)terrainTypes.GetValue(generatedType);
+                    TerrainData terrainData = new TerrainData(terrainType, generatedHeight);
                     tileMapData.SetTileData(x, y, new TileData(x, y, terrainData));
                 }
             }
+        }
+
+        private int GenerateTerrainType(int x, int y, float terrainSeed, int terrainTypes)
+        {
+            float perlinNoise = Mathf.PerlinNoise((x + terrainSeed) / _generatorFrequency, (y + terrainSeed) / _generatorFrequency);
+            float step = 1.1f / terrainTypes;
+
+            return (int) (perlinNoise / step);
+        }
+        
+        private float GenerateTerrainHeight(int x, int y, float heightSeed)
+        {
+            float perlinNoise = Mathf.PerlinNoise((x + heightSeed) / _generatorFrequency, (y + heightSeed) / _generatorFrequency);
+            return perlinNoise * _maxHeight;
         }
     }
 }

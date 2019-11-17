@@ -8,6 +8,8 @@ namespace Simulation
     {
         public int sizeX = 100;
         public int sizeY = 100;
+        public float maxHeight = 2.0f;
+        public int generatorFrequency = 10;
 
         private TileMap _tileMap;
         private TileMapData _tileMapData;
@@ -26,7 +28,7 @@ namespace Simulation
 
         private void GenerateData()
         {
-            MapDataGenerator mapDataGenerator = new MapDataGenerator(sizeX, sizeY);
+            MapDataGenerator mapDataGenerator = new MapDataGenerator(sizeX, sizeY, maxHeight, generatorFrequency);
             _tileMapData = mapDataGenerator.GenerateMapData();
         }
     }

@@ -20,6 +20,11 @@
 
         public TileData GetTileData(int posX, int posY)
         {
+            if (posX < 0 || posX >= _tilesData.Length || posY < 0 || posY >= _tilesData[posX].Length)
+            {
+                return null;
+            }
+            
             return _tilesData[posX][posY];
         }
     }

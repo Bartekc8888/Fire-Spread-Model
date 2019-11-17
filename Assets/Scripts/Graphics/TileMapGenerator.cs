@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Data;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class TileMapGenerator
 {
@@ -15,7 +16,7 @@ public class TileMapGenerator
         this.tileSize = tileSize;
     }
     
-    public Mesh GenerateMap()
+    public Mesh GenerateMap(TileMapData tileMapData)
     {
         int tilesCount = size_x * size_z;
 
@@ -30,7 +31,7 @@ public class TileMapGenerator
         
         int[] triangleVertices = new int[trianglesCount * 3];
 
-        InitMapVertices(verticesSizeZ, verticesSizeX, mapVertices, normalVertices, uvVertices);
+        InitMapVertices(verticesSizeZ, verticesSizeX, mapVertices, normalVertices, uvVertices, tileMapData);
         InitTriangleVertices(verticesSizeX, triangleVertices);
 
         Mesh mesh = new Mesh
@@ -81,17 +82,33 @@ public class TileMapGenerator
     }
 
     private void InitMapVertices(int verticesSizeZ, int verticesSizeX, Vector3[] mapVertices, Vector3[] normalVertices,
-        Vector2[] uvVertices)
+        Vector2[] uvVertices, TileMapData tileMapData)
     {
         for (int z = 0; z < verticesSizeZ; z++)
         {
             for (int x = 0; x < verticesSizeX; x++)
             {
+                float vertexHeight = GetMeanVertexHeight(x, z, tileMapData);
                 int currentVertexIndex = z * verticesSizeX + x;
-                mapVertices[currentVertexIndex] = new Vector3(x * tileSize, Random.Range(0.5f, 10f), z * tileSize);
+                mapVertices[currentVertexIndex] = new Vector3(x * tileSize, vertexHeight, z * tileSize);
                 normalVertices[currentVertexIndex] = Vector3.up;
                 uvVertices[currentVertexIndex] = new Vector2((float) x / (verticesSizeX - 1), (float) z / (verticesSizeZ - 1));
             }
         }
+    }
+
+    private float GetMeanVertexHeight(int vertexX, int vertexY, TileMapData tileMapData)
+    {
+        List<TileData> tiles = new List<TileData>();
+        
+        tiles.Add(tileMapData.GetTileData(vertexX - 1, vertexY - 1));
+        tiles.Add(tileMapData.GetTileData(vertexX - 1, vertexY));
+        tiles.Add(tileMapData.GetTileData(vertexX, vertexY));
+        tiles.Add(tileMapData.GetTileData(vertexX, vertexY - 1));
+        
+        tiles.RemoveAll(item => item == null);
+        float sum = tiles.Sum(data => data.TerrainData.Height);
+        
+        return sum / tiles.Count;
     }
 }
