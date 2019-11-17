@@ -12,13 +12,15 @@ namespace Graphics
         private readonly int _sizeY;
         private readonly float _maxHeight;
         private readonly float _generatorFrequency;
+        private readonly float _windSpeed;
 
-        public MapDataGenerator(int sizeX, int sizeY, float maxHeight, float generatorFrequency)
+        public MapDataGenerator(int sizeX, int sizeY, float maxHeight, float generatorFrequency, float windSpeed)
         {
             _sizeX = sizeX;
             _sizeY = sizeY;
             _maxHeight = maxHeight;
             _generatorFrequency = generatorFrequency;
+            _windSpeed = windSpeed;
         }
         
         public TileMapData GenerateMapData()
@@ -44,7 +46,9 @@ namespace Graphics
                     float generatedHeight = GenerateTerrainHeight(x, y, heightSeed);
 
                     TerrainType terrainType = (TerrainType)terrainTypes.GetValue(generatedType);
-                    TerrainData terrainData = new TerrainData(terrainType, generatedHeight);
+                    MaterialProperties materialProperties = MaterialPropertiesFactory.GetProperties(terrainType, _windSpeed);
+                    
+                    TerrainData terrainData = new TerrainData(terrainType, generatedHeight, materialProperties);
                     tileMapData.SetTileData(x, y, new TileData(x, y, terrainData));
                 }
             }

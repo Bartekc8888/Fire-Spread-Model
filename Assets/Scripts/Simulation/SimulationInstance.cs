@@ -11,6 +11,8 @@ namespace Simulation
         public float maxHeight = 2.0f;
         public int generatorFrequency = 10;
 
+        public float windSpeed = 20.0f;
+
         private TileMap _tileMap;
         private TileMapData _tileMapData;
         
@@ -28,7 +30,7 @@ namespace Simulation
 
         private void GenerateData()
         {
-            MapDataGenerator mapDataGenerator = new MapDataGenerator(sizeX, sizeY, maxHeight, generatorFrequency);
+            MapDataGenerator mapDataGenerator = new MapDataGenerator(sizeX, sizeY, maxHeight, generatorFrequency, windSpeed);
             _tileMapData = mapDataGenerator.GenerateMapData();
         }
     }
