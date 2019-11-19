@@ -9,6 +9,7 @@ using UnityEngine;
 public class TileMap : MonoBehaviour
 {
     public TileGuiInfo tileGuiInfo;
+    public TileTypesPanel tileTypesPanel;
     public float tileSize = 1f;
     
     public int tileResolution = 16;
@@ -26,7 +27,18 @@ public class TileMap : MonoBehaviour
     void OnMouseDown()
     {
         TileData tileUnderMouse = GetTileUnderMouse();
-        tileGuiInfo.HandleMouseButtonClick(tileUnderMouse);
+        if (tileTypesPanel.IsButtonSelected())
+        {
+            TerrainType currentlySelectedTerrainType = tileTypesPanel.CurrentlySelectedTerrainType;
+            tileUnderMouse.TerrainData.Type = currentlySelectedTerrainType;
+            tileUnderMouse.TerrainData.MaterialProperties = MaterialPropertiesFactory.GetProperties(currentlySelectedTerrainType, 0f); // TODO
+            
+            UpdateTexture(tileUnderMouse);
+        }
+        else
+        {
+            tileGuiInfo.HandleMouseButtonClick(tileUnderMouse);
+        }
     }
 
     public void InitTileMap(int sizeX, int sizeY, TileMapData tileMapData)
@@ -74,11 +86,24 @@ public class TileMap : MonoBehaviour
     
     private void BuildTexture()
     {
-        TileMapTextureGenerator tileMapTextureGenerator = new TileMapTextureGenerator(textureAtlas, tileResolution, _sizeX, _sizeY);
+        TileMapTextureGenerator tileMapTextureGenerator = GetTileMapTextureGenerator();
         Texture2D texture = tileMapTextureGenerator.GenerateTexture(_tileMapData);
         _meshRenderer.sharedMaterial.mainTexture = texture;
         
         Debug.Log("Texture built!");
+    }
+
+    private void UpdateTexture(TileData tileUnderMouse)
+    {
+        TileMapTextureGenerator tileMapTextureGenerator = GetTileMapTextureGenerator();
+        tileMapTextureGenerator.UpdateTexture(_meshRenderer.sharedMaterial.mainTexture as Texture2D, tileUnderMouse);
+    }
+
+    public TileMapTextureGenerator GetTileMapTextureGenerator()
+    {
+        TileMapTextureGenerator tileMapTextureGenerator =
+            new TileMapTextureGenerator(textureAtlas, tileResolution, _sizeX, _sizeY);
+        return tileMapTextureGenerator;
     }
 
     private TileData GetTileUnderMouse()

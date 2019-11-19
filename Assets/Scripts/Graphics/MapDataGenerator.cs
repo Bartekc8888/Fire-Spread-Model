@@ -33,7 +33,7 @@ namespace Graphics
 
         private void InitTiles(TileMapData tileMapData)
         {
-            Array terrainTypes = Enum.GetValues(typeof(TerrainType));
+            TerrainType[] terrainTypes = (TerrainType[])Enum.GetValues(typeof(TerrainType));
             
             float terrainSeed = Random.Range(0.0f, 200.0f);
             float heightSeed = Random.Range(0.0f, 200.0f);
@@ -45,7 +45,7 @@ namespace Graphics
                     int generatedType = GenerateTerrainType(x, y, terrainSeed, terrainTypes.Length);
                     float generatedHeight = GenerateTerrainHeight(x, y, heightSeed);
 
-                    TerrainType terrainType = (TerrainType)terrainTypes.GetValue(generatedType);
+                    TerrainType terrainType = terrainTypes[generatedType];
                     MaterialProperties materialProperties = MaterialPropertiesFactory.GetProperties(terrainType, _windSpeed);
                     
                     TerrainData terrainData = new TerrainData(terrainType, generatedHeight, materialProperties);
