@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using System;
+using Data;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -7,11 +8,13 @@ using UnityEngine;
 [RequireComponent(typeof(MeshCollider))]
 public class TileMap : MonoBehaviour
 {
+    public TileGuiInfo tileGuiInfo;
     public float tileSize = 1f;
     
     public int tileResolution = 16;
     public Texture2D textureAtlas;
-    
+
+    private Camera _mainCamera;
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
     private MeshCollider _meshCollider;
@@ -19,6 +22,12 @@ public class TileMap : MonoBehaviour
     private TileMapData _tileMapData;
     private int _sizeX;
     private int _sizeY;
+    
+    void OnMouseDown()
+    {
+        TileData tileUnderMouse = GetTileUnderMouse();
+        tileGuiInfo.HandleMouseButtonClick(tileUnderMouse);
+    }
 
     public void InitTileMap(int sizeX, int sizeY, TileMapData tileMapData)
     {
@@ -34,6 +43,7 @@ public class TileMap : MonoBehaviour
     
     void GrabComponents()
     {
+        _mainCamera = Camera.main;
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshCollider = GetComponent<MeshCollider>();
@@ -71,5 +81,19 @@ public class TileMap : MonoBehaviour
         Debug.Log("Texture built!");
     }
 
+    private TileData GetTileUnderMouse()
+    {
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo = new RaycastHit();
+        
+        bool isTileHitWithRay = _meshCollider.Raycast(ray, out hitInfo, Mathf.Infinity);
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && isTileHitWithRay)
+        {
+            Vector3 hitPointPositionVector = gameObject.transform.InverseTransformPoint(hitInfo.point);
+            Vector2Int tileByPoint = GetTileByPoint(hitPointPositionVector);
+            return _tileMapData.GetTileData(tileByPoint.x, tileByPoint.y);
+        }
 
+        return null;
+    }
 }

@@ -13,6 +13,8 @@ namespace Simulation
 
         public float windSpeed = 20.0f;
 
+        public TileGuiInfo tileGuiInfo;
+
         private TileMap _tileMap;
         private TileMapData _tileMapData;
         
@@ -32,6 +34,12 @@ namespace Simulation
         {
             MapDataGenerator mapDataGenerator = new MapDataGenerator(sizeX, sizeY, maxHeight, generatorFrequency, windSpeed);
             _tileMapData = mapDataGenerator.GenerateMapData();
+        }
+
+        public void StartFire()
+        {
+            TileData selectedTile = tileGuiInfo.CurrentlySelectedTile;
+            
         }
     }
 }

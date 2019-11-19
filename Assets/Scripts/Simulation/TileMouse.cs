@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(MeshFilter))]
@@ -43,7 +44,7 @@ public class TileMouse : MonoBehaviour
         RaycastHit hitInfo = new RaycastHit();
         
         bool isTileHitWithRay = _collider.Raycast(ray, out hitInfo, Mathf.Infinity);
-        if (isTileHitWithRay)
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && isTileHitWithRay)
         {
             Vector3[] tileRectVertices = GetTileVerticesPositions(hitInfo);
             if (tileRectVertices.Length < 4)
