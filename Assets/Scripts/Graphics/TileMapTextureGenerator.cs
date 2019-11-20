@@ -5,6 +5,7 @@ using UnityEngine;
 public class TileMapTextureGenerator
 {
     private readonly Texture2D _textureAtlas;
+    private readonly List<Color[]> _extractedTextures;
     private readonly int _tileResolution;
     private readonly int _tileSizeX;
     private readonly int _tileSizeZ;
@@ -15,15 +16,16 @@ public class TileMapTextureGenerator
         _tileResolution = tileResolution;
         _tileSizeX = tileSizeX;
         _tileSizeZ = tileSizeZ;
+        
+        _extractedTextures = ExtractTexturesFromAtlas();
     }
 
     public Texture2D GenerateTexture(TileMapData tileMapData)
     {
-        List<Color[]> extractedTextures = ExtractTexturesFromAtlas();
-        return GenerateTexture(tileMapData, extractedTextures);
+        return GenerateTextureData(tileMapData);
     }
     
-    private List<Color[]> ExtractTexturesFromAtlas()
+    public List<Color[]> ExtractTexturesFromAtlas()
     {
         int tilesInARow = _textureAtlas.width / _tileResolution;
         int tileRowsCount = _textureAtlas.height / _tileResolution;
@@ -42,7 +44,7 @@ public class TileMapTextureGenerator
         return extractedTextures;
     }
 
-    private Texture2D GenerateTexture(TileMapData tileMapData, IReadOnlyList<Color[]> extractedTextures)
+    private Texture2D GenerateTextureData(TileMapData tileMapData)
     {
         int textureWidth = _tileResolution * _tileSizeX;
         int textureHeight = _tileResolution * _tileSizeZ;
@@ -54,7 +56,7 @@ public class TileMapTextureGenerator
             {
                 TileData tileData = tileMapData.GetTileData(x, y);
                 int textureIndex = MapTerrainToTexture(tileData.TerrainData.Type);
-                Color[] extractedTexture = extractedTextures[textureIndex];
+                Color[] extractedTexture = _extractedTextures[textureIndex];
                 texture.SetPixels(x * _tileResolution, y * _tileResolution, _tileResolution, _tileResolution, extractedTexture);
             }
         }
@@ -65,7 +67,7 @@ public class TileMapTextureGenerator
         return texture;
     }
 
-    private int MapTerrainToTexture(TerrainType type)
+    public int MapTerrainToTexture(TerrainType type)
     {
         switch (type)
         {
@@ -80,5 +82,14 @@ public class TileMapTextureGenerator
             default:
                 return 0;
         }
+    }
+
+    public void UpdateTexture(Texture2D sharedMaterialMainTexture, TileData tileUnderMouse)
+    {
+        int textureIndex = MapTerrainToTexture(tileUnderMouse.TerrainData.Type);
+        Color[] extractedTexture = _extractedTextures[textureIndex];
+        sharedMaterialMainTexture.SetPixels(tileUnderMouse.PositionX * _tileResolution,
+            tileUnderMouse.PositionY * _tileResolution, _tileResolution, _tileResolution, extractedTexture);
+        sharedMaterialMainTexture.Apply();
     }
 }
