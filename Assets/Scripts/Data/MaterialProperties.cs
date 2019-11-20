@@ -11,13 +11,10 @@
         public readonly float OvenDryFuelLoad;
         public readonly float FuelBedDepth;
         public readonly float DeadFuelMoistureOfExtinction;
-        
-        public readonly float MoistureContent;
-        public readonly float WindVelocity;
 
         public MaterialProperties(float lowHeatContent, float totalMineralContent, float effectiveMineralContent,
             float ovenDryParticleDensity, float surfaceAreaToVolumeRatio, float ovenDryFuelLoad, float fuelBedDepth,
-            float deadFuelMoistureOfExtinction, float moistureContent, float windVelocity)
+            float deadFuelMoistureOfExtinction)
         {
             LowHeatContent = lowHeatContent;
             TotalMineralContent = totalMineralContent;
@@ -28,9 +25,6 @@
             OvenDryFuelLoad = ovenDryFuelLoad;
             FuelBedDepth = fuelBedDepth;
             DeadFuelMoistureOfExtinction = deadFuelMoistureOfExtinction;
-            
-            MoistureContent = moistureContent;
-            WindVelocity = windVelocity;
         }
     }
 }
