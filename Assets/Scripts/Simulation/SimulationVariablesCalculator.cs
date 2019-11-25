@@ -83,18 +83,18 @@ namespace Simulation
 
         private float CalculateOptimumPackingRatio()
         {
-            return 3.348f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, -0.8189f);
+            return 0.20395f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, -0.8189f);
         }
 
         private float CalculateMaximumReactionVelocity()
         {
-            float ratioPower = Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 1.5f);
-            return ratioPower * Mathf.Pow((495.0f + 0.0594f * ratioPower), -1.0f);
+            float ratioPower = Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, -1.5f);
+            return Mathf.Pow((0.0591f + 2.926f * ratioPower), -1.0f);
         }
 
         private float CalculateOptimumReactionVelocity()
         {
-            float a = 133.0f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, -0.7913f);
+            float a = 8.9033f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, -0.7913f);
             return maximumReactionVelocity * Mathf.Pow(packingRatio / optimumPackingRatio, a)
                 * Mathf.Exp(a * (1 - packingRatio / optimumPackingRatio));
         }
@@ -116,18 +116,18 @@ namespace Simulation
 
         private float CalculatePropagatingFluxRatio()
         {
-            return Mathf.Pow(192.0f + 0.2595f * materialProperties.SurfaceAreaToVolumeRatio, -1.0f)
-                * Mathf.Exp(0.792f + 0.681f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.5f)
+            return Mathf.Pow(192.0f + 7.9095f * materialProperties.SurfaceAreaToVolumeRatio, -1.0f)
+                * Mathf.Exp((0.792f + 3.7597f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.5f))
                 * (packingRatio + 0.1f));
         }
 
         private float CalculateWindFactor(float windVelocity)
         {
-            float c = 7.47f * Mathf.Exp(-0.133f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.55f));
-            float b = 0.02526f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.54f);
-            float e = 0.715f * Mathf.Exp(-3.59f * 0.0001f * materialProperties.SurfaceAreaToVolumeRatio);
+            float c = 7.47f * Mathf.Exp(-0.8711f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.55f));
+            float b = 0.15988f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.54f);
+            float e = 0.715f * Mathf.Exp(-0.01094f * materialProperties.SurfaceAreaToVolumeRatio);
 
-            return c * Mathf.Pow(windVelocity, b) 
+            return c * Mathf.Pow(3.281f * windVelocity, b) 
                 * Mathf.Pow(packingRatio / optimumPackingRatio, -1.0f * e);
         }
 
@@ -138,12 +138,12 @@ namespace Simulation
 
         private float CalculateEffectiveHeatingNumber()
         {
-            return Mathf.Exp(-138.0f / materialProperties.SurfaceAreaToVolumeRatio);
+            return Mathf.Exp(-4.528f / materialProperties.SurfaceAreaToVolumeRatio);
         }
 
         private float CalculateHeatOfPreignition(float moistureContent)
         {
-            return 250.0f + 1116.0f * moistureContent;
+            return 581.0f + 2594.0f * moistureContent;
         }
     }
 }

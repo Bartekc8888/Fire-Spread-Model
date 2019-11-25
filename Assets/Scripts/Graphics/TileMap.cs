@@ -31,7 +31,7 @@ public class TileMap : MonoBehaviour
         {
             TerrainType currentlySelectedTerrainType = tileTypesPanel.CurrentlySelectedTerrainType;
             tileUnderMouse.TerrainData.Type = currentlySelectedTerrainType;
-            tileUnderMouse.TerrainData.MaterialProperties = MaterialPropertiesFactory.GetProperties(currentlySelectedTerrainType, 0f); // TODO
+            tileUnderMouse.TerrainData.MaterialProperties = MaterialPropertiesFactory.GetProperties(currentlySelectedTerrainType);
             
             UpdateTexture(tileUnderMouse);
         }
