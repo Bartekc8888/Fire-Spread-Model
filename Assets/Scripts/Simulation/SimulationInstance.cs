@@ -24,6 +24,7 @@ namespace Simulation
 
         private bool startedFire = false;
         private SimulationVariablesCalculator simulationVariablesCalculator;
+        private int _simulationSpeed = 1;
         
         void Start()
         {
@@ -41,7 +42,6 @@ namespace Simulation
                 {
                     List<TileData> neighbours = GetUnburningNeighbours(tile);
 
-                    CheckIfTileIsBurned(tile, neighbours);
                     BurnNeighbours(tile, neighbours);
                 }
             }
@@ -52,6 +52,12 @@ namespace Simulation
             GenerateData();
             _tileMap = gameObject.GetComponent<TileMap>();
             _tileMap.InitTileMap(sizeX, sizeY, _tileMapData);
+        }
+
+        public void SetSimulationSpeed(int newSimulationSpeed)
+        {
+            _simulationSpeed = newSimulationSpeed;
+            Debug.Log("New simulation speed: " + newSimulationSpeed);
         }
 
         private void GenerateData()
@@ -118,7 +124,7 @@ namespace Simulation
             {
                 foreach (TileData y in x)
                 {
-                    if(y.IsBurning && !y.IsBurned)
+                    if(y.IsBurning)
                     {
                         burning.Add(y);
                     }
@@ -126,12 +132,6 @@ namespace Simulation
             }
 
             return burning;
-        }
-
-        private void CheckIfTileIsBurned(TileData tile, List<TileData> unburningNeighbours)
-        {
-            if (unburningNeighbours.Count == 0)
-                tile.IsBurned = true;
         }
 
         private void BurnTile(TileData tile)
@@ -176,7 +176,7 @@ namespace Simulation
             float timeSinceLastFrame = Time.deltaTime / 60000.0f;
             float burningSpeed = simulationVariablesCalculator.RateOfSpread;
 
-            float deltaDistance = timeSinceLastFrame * burningSpeed;
+            float deltaDistance = timeSinceLastFrame * burningSpeed * _simulationSpeed;
 
             return deltaDistance;
         }

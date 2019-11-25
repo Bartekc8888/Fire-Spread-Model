@@ -27,17 +27,44 @@ public class TileMap : MonoBehaviour
     void OnMouseDown()
     {
         TileData tileUnderMouse = GetTileUnderMouse();
-        if (tileTypesPanel.IsButtonSelected())
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && tileTypesPanel.IsButtonSelected())
         {
             TerrainType currentlySelectedTerrainType = tileTypesPanel.CurrentlySelectedTerrainType;
             tileUnderMouse.TerrainData.Type = currentlySelectedTerrainType;
-            tileUnderMouse.TerrainData.MaterialProperties = MaterialPropertiesFactory.GetProperties(currentlySelectedTerrainType);
-            
+            tileUnderMouse.TerrainData.MaterialProperties = tileTypesPanel.GetPropertiesForCurrentSelection();
+
+            ResetBurningDistance(tileUnderMouse);
             UpdateTexture(tileUnderMouse);
+            tileUnderMouse.IsBurning = false;
         }
         else
         {
             tileGuiInfo.HandleMouseButtonClick(tileUnderMouse);
+        }
+    }
+
+    private void ResetBurningDistance(TileData tileData)
+    {
+        string tileKey = tileData.PositionX.ToString() + tileData.PositionY.ToString();
+
+        for (int x = tileData.PositionX - 1; x <= tileData.PositionX + 1; x++)
+        {
+            if (x < 0 || x >= _tileMapData.GetTileData().Length)
+               continue;
+
+            for (int y = tileData.PositionY - 1; y <= tileData.PositionY + 1; y++)
+            {
+                if (y < 0 || y >= _tileMapData.GetTileData()[x].Length)
+                    continue;
+                if (x == tileData.PositionX && y == tileData.PositionY)
+                    continue;
+
+                if (_tileMapData.GetTileData(x, y).FireSpreadingDistance.ContainsKey(tileKey))
+                {
+                    _tileMapData.GetTileData(x, y).FireSpreadingDistance[tileKey] = 0.0f;
+                }
+            }
+            
         }
     }
 

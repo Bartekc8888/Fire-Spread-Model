@@ -13,18 +13,13 @@ namespace Data
 
         public bool IsBurning { get; set; }
 
-        public bool IsBurned { get; set; }
-
         public TileData(int positionX, int positionY, TerrainData terrainData)
         {
             PositionX = positionX;
             PositionY = positionY;
             TerrainData = terrainData;
             IsBurning = false;
-            IsBurned = false;
             FireSpreadingDistance = new Dictionary<string, float>();
         }
-
-
     }
 }

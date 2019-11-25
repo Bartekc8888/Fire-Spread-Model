@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6870123215333141013}
   - component: {fileID: 2869187305938321947}
   - component: {fileID: 6274273930310775312}
+  - component: {fileID: -6510048385899742363}
   m_Layer: 5
   m_Name: TerrainTypeButton
   m_TagString: Untagged
@@ -116,6 +117,27 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 2869187305938321947}
   m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &-6510048385899742363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 317363985225820373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d384e35a214a64fa6864e5e8890bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  onRight:
+    m_PersistentCalls:
+      m_Calls: []
+  onMiddle:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &856348155075728417

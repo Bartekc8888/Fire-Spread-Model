@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Simulation
 {
-    public class SimulationVariablesCalculator
+    public class SimulationVariablesCalculator : MonoBehaviour
     {
         private MaterialProperties materialProperties;
 
