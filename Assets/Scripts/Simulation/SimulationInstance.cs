@@ -21,6 +21,8 @@ namespace Simulation
 
         private TileMap _tileMap;
         private TileMapData _tileMapData;
+
+        private int _simulationSpeed = 1;
         
         void Start()
         {
@@ -32,6 +34,12 @@ namespace Simulation
             GenerateData();
             _tileMap = gameObject.GetComponent<TileMap>();
             _tileMap.InitTileMap(sizeX, sizeY, _tileMapData);
+        }
+
+        public void SetSimulationSpeed(int newSimulationSpeed)
+        {
+            _simulationSpeed = newSimulationSpeed;
+            Debug.Log("New simulation speed: " + newSimulationSpeed);
         }
 
         private void GenerateData()
