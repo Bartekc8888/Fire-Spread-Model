@@ -26,5 +26,17 @@
             FuelBedDepth = fuelBedDepth;
             DeadFuelMoistureOfExtinction = deadFuelMoistureOfExtinction;
         }
+
+        public MaterialProperties Clone()
+        {
+            return new MaterialProperties(LowHeatContent,
+                TotalMineralContent,
+                EffectiveMineralContent,
+                OvenDryParticleDensity,
+                SurfaceAreaToVolumeRatio,
+                OvenDryFuelLoad,
+                FuelBedDepth,
+                DeadFuelMoistureOfExtinction);
+        }
     }
 }

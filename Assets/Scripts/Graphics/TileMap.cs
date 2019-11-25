@@ -27,11 +27,11 @@ public class TileMap : MonoBehaviour
     void OnMouseDown()
     {
         TileData tileUnderMouse = GetTileUnderMouse();
-        if (tileTypesPanel.IsButtonSelected())
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && tileTypesPanel.IsButtonSelected())
         {
             TerrainType currentlySelectedTerrainType = tileTypesPanel.CurrentlySelectedTerrainType;
             tileUnderMouse.TerrainData.Type = currentlySelectedTerrainType;
-            tileUnderMouse.TerrainData.MaterialProperties = MaterialPropertiesFactory.GetProperties(currentlySelectedTerrainType);
+            tileUnderMouse.TerrainData.MaterialProperties = tileTypesPanel.GetPropertiesForCurrentSelection();
             
             UpdateTexture(tileUnderMouse);
         }
