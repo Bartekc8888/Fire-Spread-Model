@@ -8,31 +8,34 @@ namespace Simulation
     {
         private MaterialProperties materialProperties;
 
-        public float reactionIntensity;
-        public float optimumReactionVelocity;
-        public float maximumReactionVelocity;
-        public float optimumPackingRatio;
-        public float packingRatio;
-        public float ovenDryBulkDensity;
-        public float netFuelLoad;
+        private float reactionIntensity;
+        private float optimumReactionVelocity;
+        private float maximumReactionVelocity;
+        private float optimumPackingRatio;
+        private float packingRatio;
+        private float ovenDryBulkDensity;
+        private float netFuelLoad;
 
-        public float moistureDampingCoefficient;
-        public float mineralDampingCoefficient;
+        private float moistureDampingCoefficient;
+        private float mineralDampingCoefficient;
 
-        public float propagatingFluxRatio;
-        public float windFactor;
-        public float slopeFactor;
-        public float effectiveHeatingNumber;
-        public float heatOfPreignition;
+        private float propagatingFluxRatio;
+        private float windFactor;
+        private float slopeFactor;
+        private float effectiveHeatingNumber;
+        private float heatOfPreignition;
 
         public float RateOfSpread { get; set; }
 
-        public SimulationVariablesCalculator(Data.TerrainData terrainData)
+        public SimulationVariablesCalculator()
+        {
+        }
+
+        public void CalculateVariables(Data.TerrainData terrainData, float slopeSteepness, float moistureContent, 
+            float windSpeed)
         {
             this.materialProperties = terrainData.MaterialProperties;
-        }
-        public void CalculateVariables(float slopeSteepness, float moistureContent, float windSpeed)
-        {
+
             netFuelLoad = CalculateNetFuelLoad();
             ovenDryBulkDensity = CalculateOvenDryBulkDensity();
             packingRatio = CalculatePackingRatio();

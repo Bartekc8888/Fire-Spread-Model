@@ -86,10 +86,28 @@ public class TileMapTextureGenerator
 
     public void UpdateTexture(Texture2D sharedMaterialMainTexture, TileData tileUnderMouse)
     {
-        int textureIndex = MapTerrainToTexture(tileUnderMouse.TerrainData.Type);
-        Color[] extractedTexture = _extractedTextures[textureIndex];
+        Color[] extractedTexture = GetExtractedTexture(tileUnderMouse);
         sharedMaterialMainTexture.SetPixels(tileUnderMouse.PositionX * _tileResolution,
             tileUnderMouse.PositionY * _tileResolution, _tileResolution, _tileResolution, extractedTexture);
         sharedMaterialMainTexture.Apply();
+    }
+
+    private Color[] GetExtractedTexture(TileData tileUnderMouse)
+    {
+        Color[] extractedTexture;
+        if (tileUnderMouse.TerrainData.Type == TerrainType.Burning)
+        {
+            extractedTexture = new Color[_tileSizeX * _tileSizeZ];
+            for(int i = 0; i < _tileSizeX * _tileSizeZ; i++)
+            {
+                extractedTexture[i] = Color.red;
+            }
+        }
+        else
+        {
+            int textureIndex = MapTerrainToTexture(tileUnderMouse.TerrainData.Type);
+            extractedTexture = _extractedTextures[textureIndex];
+        }
+        return extractedTexture;
     }
 }

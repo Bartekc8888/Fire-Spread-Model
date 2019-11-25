@@ -21,10 +21,30 @@ namespace Simulation
 
         private TileMap _tileMap;
         private TileMapData _tileMapData;
+
+        private bool startedFire = false;
+        private SimulationVariablesCalculator simulationVariablesCalculator;
         
         void Start()
         {
             RebuildSimulation();
+            simulationVariablesCalculator = new SimulationVariablesCalculator();
+        }
+
+        private void FixedUpdate()
+        {
+            if(startedFire)
+            {
+                List<TileData> burningTiles = GetBurningTiles();
+                
+                foreach (TileData tile in burningTiles)
+                {
+                    List<TileData> neighbours = GetUnburningNeighbours(tile);
+
+                    CheckIfTileIsBurned(tile, neighbours);
+                    BurnNeighbours(tile, neighbours);
+                }
+            }
         }
 
         public void RebuildSimulation()
@@ -43,43 +63,122 @@ namespace Simulation
         public void StartFire()
         {
             TileData selectedTile = tileGuiInfo.CurrentlySelectedTile;
-            selectedTile.IsBurning = true;
+            BurnTile(selectedTile);
+            startedFire = true;
 
-            SimulationVariablesCalculator variablesCalculator = new SimulationVariablesCalculator(selectedTile.TerrainData);
-
-            List<float> slopeSteepnesses = CalculateSlopeSteepnesses(selectedTile);
-
-
-            foreach(float steepness in slopeSteepnesses)
-            {
-                variablesCalculator.CalculateVariables(steepness, moistureContent, windSpeed);
-                Debug.Log(variablesCalculator.RateOfSpread);
-            }
         }
 
-        private List<float> CalculateSlopeSteepnesses(TileData selectedTile)
+        private float CalculateSlopeSteepness(TileData selectedTile, TileData anotherTile)
         {
-            List<float> steepnesses = new List<float>();
+            float slopeSteepness = (anotherTile.TerrainData.Height - selectedTile.TerrainData.Height)
+                  / _tileMap.tileSize;
+
+            return slopeSteepness;
+        }
+
+        private float CalculateWholeDistance(TileData selectedTile, TileData anotherTile)
+        {
+            double xDistance = Math.Pow(selectedTile.PositionX - anotherTile.PositionX, 2);
+            double yDistance = Math.Pow(selectedTile.PositionY - anotherTile.PositionY, 2);
+            float distance = _tileMap.tileSize * (float) Math.Sqrt(xDistance + yDistance);
+
+            return distance;
+        }
+
+        private List<TileData> GetUnburningNeighbours(TileData selectedTile)
+        {
+            List<TileData> neighbours = new List<TileData>();
             for (int x = selectedTile.PositionX - 1; x <= selectedTile.PositionX + 1; x++)
             {
-                if ( x < 0)
+                if (x < 0 || x >=_tileMap._tileMapData.GetTileData().Length)
                     continue;
 
-                for(int y = selectedTile.PositionY - 1; y <= selectedTile.PositionY + 1; y++ )
+                for (int y = selectedTile.PositionY - 1; y <= selectedTile.PositionY + 1; y++)
                 {
-                    if (y < 0)
+                    if (y < 0 || y >= _tileMap._tileMapData.GetTileData()[x].Length)
                         continue;
                     if (x == selectedTile.PositionX && y == selectedTile.PositionY)
                         continue;
 
-                    float slopeSteepness = (_tileMapData.GetTileData(x, y).TerrainData.Height - selectedTile.TerrainData.Height)
-                        / 20.0f;
-
-                    steepnesses.Add(slopeSteepness);
+                    if(!_tileMapData.GetTileData(x, y).IsBurning)
+                    {
+                        neighbours.Add(_tileMapData.GetTileData(x, y));
+                    }
                 }
             }
 
-            return steepnesses;
+            return neighbours;
+        }
+
+        private List<TileData> GetBurningTiles()
+        {
+            List<TileData> burning = new List<TileData>();
+
+            foreach (TileData[] x in _tileMap._tileMapData.GetTileData())
+            {
+                foreach (TileData y in x)
+                {
+                    if(y.IsBurning && !y.IsBurned)
+                    {
+                        burning.Add(y);
+                    }
+                }
+            }
+
+            return burning;
+        }
+
+        private void CheckIfTileIsBurned(TileData tile, List<TileData> unburningNeighbours)
+        {
+            if (unburningNeighbours.Count == 0)
+                tile.IsBurned = true;
+        }
+
+        private void BurnTile(TileData tile)
+        {
+            tile.IsBurning = true;
+            tile.TerrainData.Type = TerrainType.Burning;
+            _tileMap.UpdateTexture(tile);
+        }
+
+        private void BurnNeighbours(TileData tile, List<TileData> neighbours)
+        {
+            foreach (TileData neighbour in neighbours)
+            {
+                float deltaDistance = CalculateBurnedDistance(tile, neighbour);
+                float wholeDistance = CalculateWholeDistance(tile, neighbour);
+
+                string neighbourKey = neighbour.PositionX.ToString() + neighbour.PositionY.ToString();
+
+                if (tile.FireSpreadingDistance.ContainsKey(neighbourKey))
+                {
+                    tile.FireSpreadingDistance[neighbourKey] += deltaDistance;
+
+                }
+                else
+                {
+                    tile.FireSpreadingDistance.Add(neighbourKey, deltaDistance);
+                }
+
+                if (tile.FireSpreadingDistance[neighbourKey] >= wholeDistance)
+                {
+                    BurnTile(neighbour);
+                }
+            }
+        }
+
+        private float CalculateBurnedDistance(TileData tile, TileData neighbour)
+        {
+            float slopeSteepness = CalculateSlopeSteepness(tile, neighbour);
+            simulationVariablesCalculator.CalculateVariables(tile.TerrainData, slopeSteepness,
+                moistureContent, windSpeed);
+
+            float timeSinceLastFrame = Time.deltaTime / 60000.0f;
+            float burningSpeed = simulationVariablesCalculator.RateOfSpread;
+
+            float deltaDistance = timeSinceLastFrame * burningSpeed;
+
+            return deltaDistance;
         }
     }
 }

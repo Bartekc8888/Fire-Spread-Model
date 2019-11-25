@@ -20,7 +20,7 @@ public class TileMap : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private MeshCollider _meshCollider;
 
-    private TileMapData _tileMapData;
+    public TileMapData _tileMapData;
     private int _sizeX;
     private int _sizeY;
     
@@ -93,7 +93,7 @@ public class TileMap : MonoBehaviour
         Debug.Log("Texture built!");
     }
 
-    private void UpdateTexture(TileData tileUnderMouse)
+    public void UpdateTexture(TileData tileUnderMouse)
     {
         TileMapTextureGenerator tileMapTextureGenerator = GetTileMapTextureGenerator();
         tileMapTextureGenerator.UpdateTexture(_meshRenderer.sharedMaterial.mainTexture as Texture2D, tileUnderMouse);

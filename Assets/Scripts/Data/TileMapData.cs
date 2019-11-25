@@ -27,5 +27,10 @@
             
             return _tilesData[posX][posY];
         }
+
+        public TileData[][] GetTileData()
+        {
+            return _tilesData;
+        }
     }
 }

@@ -24,6 +24,10 @@ namespace Data
                     return new MaterialProperties(18608f, 0.0555f, 0.01f, 
                         512.576f, 49.2125f, 0.67251f, 0.762f,
                         0.25f); // Tall grass
+                case TerrainType.Burning:
+                    return new MaterialProperties(0.0f, 0.0f, 0.0f,
+                        0.0f, 0.0f, 0.0f, 0.0f,
+                        0.0f); // Burning
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
