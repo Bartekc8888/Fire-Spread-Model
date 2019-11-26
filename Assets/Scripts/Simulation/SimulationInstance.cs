@@ -24,7 +24,7 @@ namespace Simulation
 
         private bool startedFire = false;
         private SimulationVariablesCalculator simulationVariablesCalculator;
-        private int _simulationSpeed = 1;
+        private int _simulationSpeed = 30_000;
         
         void Start()
         {
@@ -170,7 +170,7 @@ namespace Simulation
         private float CalculateBurnedDistance(TileData tile, TileData neighbour)
         {
             float slopeSteepness = CalculateSlopeSteepness(tile, neighbour);
-            simulationVariablesCalculator.CalculateVariables(tile.TerrainData, slopeSteepness,
+            simulationVariablesCalculator.CalculateVariables(neighbour.TerrainData, slopeSteepness,
                 moistureContent, windSpeed);
 
             float timeSinceLastFrame = Time.deltaTime / 60000.0f;

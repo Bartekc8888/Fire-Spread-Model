@@ -52,7 +52,7 @@ public class TileTypesPanel : MonoBehaviour
 
     private void GenerateButtonsForTileTypes()
     {
-        TerrainType[] terrainTypesValues = (TerrainType[])Enum.GetValues(typeof(TerrainType));
+        TerrainType[] terrainTypesValues = MaterialPropertiesFactory.GetAllowedInitialTerrainTypes();
         InitTerrainTypeMaterialProperties(terrainTypesValues);
         
         TileMapTextureGenerator tileMapTextureGenerator = TileMap.GetTileMapTextureGenerator();

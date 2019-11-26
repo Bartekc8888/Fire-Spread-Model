@@ -16,11 +16,11 @@ public class SpeedButtons : MonoBehaviour
     void Start()
     {
         stopButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(stopButton, 0));
-        startButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(startButton, 30000));
-        fasterButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(fasterButton, 120000));
-        fastestButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(fastestButton, 360000));
+        startButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(startButton, 30_000));
+        fasterButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(fasterButton, 120_000));
+        fastestButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(fastestButton, 360_000));
 
-        simulationInstance.SetSimulationSpeed(1);
+        simulationInstance.SetSimulationSpeed(30_000);
         HighlightButton(startButton);
     }
 

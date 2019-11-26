@@ -79,6 +79,8 @@ public class TileMapTextureGenerator
                 return 2;
             case TerrainType.HighGrass:
                 return 3;
+            case TerrainType.Burning:
+                return 4;
             default:
                 return 0;
         }
@@ -94,20 +96,8 @@ public class TileMapTextureGenerator
 
     private Color[] GetExtractedTexture(TileData tileUnderMouse)
     {
-        Color[] extractedTexture;
-        if (tileUnderMouse.TerrainData.Type == TerrainType.Burning)
-        {
-            extractedTexture = new Color[_tileSizeX * _tileSizeZ];
-            for(int i = 0; i < _tileSizeX * _tileSizeZ; i++)
-            {
-                extractedTexture[i] = Color.red;
-            }
-        }
-        else
-        {
-            int textureIndex = MapTerrainToTexture(tileUnderMouse.TerrainData.Type);
-            extractedTexture = _extractedTextures[textureIndex];
-        }
+        int textureIndex = MapTerrainToTexture(tileUnderMouse.TerrainData.Type);
+        Color[] extractedTexture = _extractedTextures[textureIndex];
         return extractedTexture;
     }
 }

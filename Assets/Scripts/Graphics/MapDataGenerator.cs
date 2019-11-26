@@ -32,7 +32,7 @@ namespace Graphics
 
         private void InitTiles(TileMapData tileMapData)
         {
-            TerrainType[] terrainTypes = (TerrainType[])Enum.GetValues(typeof(TerrainType));
+            TerrainType[] terrainTypes = MaterialPropertiesFactory.GetAllowedInitialTerrainTypes();
             
             float terrainSeed = Random.Range(0.0f, 200.0f);
             float heightSeed = Random.Range(0.0f, 200.0f);

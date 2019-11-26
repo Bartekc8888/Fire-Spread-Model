@@ -32,5 +32,10 @@ namespace Data
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
+
+        public static TerrainType[] GetAllowedInitialTerrainTypes()
+        {
+            return new[] {TerrainType.Grass, TerrainType.Trees, TerrainType.Bushes, TerrainType.HighGrass};
+        }
     }
 }
