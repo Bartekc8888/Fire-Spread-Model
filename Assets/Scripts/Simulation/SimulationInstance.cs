@@ -14,17 +14,21 @@ namespace Simulation
         public float maxHeight = 2.0f;
         public int generatorFrequency = 10;
 
+        public float windDirection = 0f;
         public float windSpeed = 20.0f;
         public float moistureContent = 0.7f;
 
         public TileGuiInfo tileGuiInfo;
+        public TimeDisplayController timeDisplayController;
 
         private TileMap _tileMap;
         private TileMapData _tileMapData;
 
         private bool startedFire = false;
         private SimulationVariablesCalculator simulationVariablesCalculator;
-        private int _simulationSpeed = 30_000;
+        private int _simulationSpeed = 30;
+
+        private float _elapsedTime = 0f;
         
         void Start()
         {
@@ -36,6 +40,8 @@ namespace Simulation
         {
             if(startedFire)
             {
+                UpdateTimer();
+
                 List<TileData> burningTiles = GetBurningTiles();
                 
                 foreach (TileData tile in burningTiles)
@@ -45,6 +51,14 @@ namespace Simulation
                     BurnNeighbours(tile, neighbours);
                 }
             }
+        }
+
+        private void UpdateTimer()
+        {
+            float minutesSinceLastFrame = Time.deltaTime * _simulationSpeed / 60.0f;
+            _elapsedTime += minutesSinceLastFrame;
+            
+            timeDisplayController.UpdateTimerDisplay(_elapsedTime);
         }
 
         public void RebuildSimulation()
@@ -58,6 +72,12 @@ namespace Simulation
         {
             _simulationSpeed = newSimulationSpeed;
             Debug.Log("New simulation speed: " + newSimulationSpeed);
+        }
+
+        public void UpdateWindConfig(float speed, float direction)
+        {
+            windSpeed = speed;
+            windDirection = direction;
         }
 
         private void GenerateData()
@@ -173,7 +193,7 @@ namespace Simulation
             simulationVariablesCalculator.CalculateVariables(neighbour.TerrainData, slopeSteepness,
                 moistureContent, windSpeed);
 
-            float timeSinceLastFrame = Time.deltaTime / 60000.0f;
+            float timeSinceLastFrame = Time.deltaTime / 60.0f;
             float burningSpeed = simulationVariablesCalculator.RateOfSpread;
 
             float deltaDistance = timeSinceLastFrame * burningSpeed * _simulationSpeed;
