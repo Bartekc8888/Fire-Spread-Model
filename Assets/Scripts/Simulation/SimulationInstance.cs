@@ -78,7 +78,6 @@ namespace Simulation
         {
             windSpeed = speed;
             windDirection = direction;
-            Debug.Log(windDirection);
         }
 
         private void GenerateData()
@@ -167,7 +166,6 @@ namespace Simulation
             foreach (TileData neighbour in neighbours)
             {
                 float angle = CalculateAngle(tile, neighbour);
-                Debug.Log(windDirection);
                 float cosAngle = Mathf.Cos(angle - Mathf.Deg2Rad * windDirection);
                 cosAngle = cosAngle < 0 ? 0 : cosAngle;
 
