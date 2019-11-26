@@ -1,10 +1,13 @@
-﻿using Simulation;
+﻿using System;
+using Simulation;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SpeedButtons : MonoBehaviour
 {
     public SimulationInstance simulationInstance;
+    public GameObject resetButton;
     public GameObject stopButton;
     public GameObject startButton;
     public GameObject fasterButton;
@@ -15,6 +18,7 @@ public class SpeedButtons : MonoBehaviour
     
     void Start()
     {
+        resetButton.GetComponent<Button>().onClick.AddListener(() => ResetScene());
         stopButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(stopButton, 0));
         startButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(startButton, 30));
         fasterButton.GetComponent<Button>().onClick.AddListener(() => HandleButtonClick(fasterButton, 120));
@@ -22,6 +26,11 @@ public class SpeedButtons : MonoBehaviour
 
         simulationInstance.SetSimulationSpeed(30);
         HighlightButton(startButton);
+    }
+
+    private void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void HandleButtonClick(GameObject clickedButton, int gameSpeed)
