@@ -16,6 +16,7 @@ namespace Simulation
 
         public float windSpeed = 20.0f;
         public float moistureContent = 0.7f;
+        public float windAngle = 0.0f;
 
         public TileGuiInfo tileGuiInfo;
 
@@ -145,7 +146,11 @@ namespace Simulation
         {
             foreach (TileData neighbour in neighbours)
             {
-                float deltaDistance = CalculateBurnedDistance(tile, neighbour);
+                float angle = CalculateAngle(tile, neighbour);
+                float cosAngle = Mathf.Cos(angle - windAngle);
+                cosAngle = cosAngle < 0 ? 0 : cosAngle;
+
+                float deltaDistance = CalculateBurnedDistance(tile, neighbour, cosAngle);
                 float wholeDistance = CalculateWholeDistance(tile, neighbour);
 
                 string neighbourKey = neighbour.PositionX.ToString() + neighbour.PositionY.ToString();
@@ -167,11 +172,64 @@ namespace Simulation
             }
         }
 
-        private float CalculateBurnedDistance(TileData tile, TileData neighbour)
+        private float CalculateAngle(TileData tile, TileData neighbour)
+        {
+
+            float b_x = neighbour.PositionY - tile.PositionY;
+            float b_y = neighbour.PositionX - tile.PositionX;
+
+            float angle = 0.0f;
+
+            if(b_x == 0.0f)
+            {
+                if(b_y == -1.0f)
+                {
+                    angle = Mathf.PI * 3.0f / 2.0f;
+                }
+                if(b_y == 1.0f)
+                {
+                    angle = Mathf.PI / 2.0f;
+                }
+            }
+            if(b_x == -1.0f)
+            {
+                if (b_y == -1.0f)
+                {
+                    angle = Mathf.PI * 5.0f / 4.0f;
+                }
+                if (b_y == 0.0f)
+                {
+                    angle = Mathf.PI;
+                }
+                if (b_y == 1.0f)
+                {
+                    angle = Mathf.PI * 3.0f / 4.0f;
+                }
+            }
+            if (b_x == 1.0f)
+            {
+                if (b_y == -1.0f)
+                {
+                    angle = Mathf.PI * 7.0f / 4.0f;
+                }
+                if (b_y == 0.0f)
+                {
+                    angle = 0.0f;
+                }
+                if (b_y == 1.0f)
+                {
+                    angle = Mathf.PI / 4.0f;
+                }
+            }
+
+            return angle;
+        }
+
+        private float CalculateBurnedDistance(TileData tile, TileData neighbour, float cosAngle)
         {
             float slopeSteepness = CalculateSlopeSteepness(tile, neighbour);
             simulationVariablesCalculator.CalculateVariables(neighbour.TerrainData, slopeSteepness,
-                moistureContent, windSpeed);
+                moistureContent, windSpeed, cosAngle);
 
             float timeSinceLastFrame = Time.deltaTime / 60000.0f;
             float burningSpeed = simulationVariablesCalculator.RateOfSpread;

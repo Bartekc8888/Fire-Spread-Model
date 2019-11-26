@@ -32,7 +32,7 @@ namespace Simulation
         }
 
         public void CalculateVariables(Data.TerrainData terrainData, float slopeSteepness, float moistureContent, 
-            float windSpeed)
+            float windSpeed, float cosAngle)
         {
             this.materialProperties = terrainData.MaterialProperties;
 
@@ -48,7 +48,7 @@ namespace Simulation
 
             reactionIntensity = CalculateReactionIntensity();
             propagatingFluxRatio = CalculatePropagatingFluxRatio();
-            windFactor = CalculateWindFactor(windSpeed);
+            windFactor = CalculateWindFactor(windSpeed, cosAngle);
             slopeFactor = CalculateSlopeFactor(slopeSteepness);
             effectiveHeatingNumber = CalculateEffectiveHeatingNumber();
             heatOfPreignition = CalculateHeatOfPreignition(moistureContent);
@@ -124,13 +124,13 @@ namespace Simulation
                 * (packingRatio + 0.1f));
         }
 
-        private float CalculateWindFactor(float windVelocity)
+        private float CalculateWindFactor(float windVelocity, float cosAngle)
         {
             float c = 7.47f * Mathf.Exp(-0.8711f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.55f));
             float b = 0.15988f * Mathf.Pow(materialProperties.SurfaceAreaToVolumeRatio, 0.54f);
             float e = 0.715f * Mathf.Exp(-0.01094f * materialProperties.SurfaceAreaToVolumeRatio);
 
-            return c * Mathf.Pow(3.281f * windVelocity, b) 
+            return cosAngle * c * Mathf.Pow(3.281f * windVelocity, b) 
                 * Mathf.Pow(packingRatio / optimumPackingRatio, -1.0f * e);
         }
 
